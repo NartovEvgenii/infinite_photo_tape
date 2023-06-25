@@ -1,10 +1,13 @@
+import 'dart:async';
+
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:infinite_photo_tape/page/photo_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/photo.dart';
 import '../service/photo_service.dart';
-import '../widget/favorite_icon_widget.dart';
+import '../widget/list_photo_widget.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -19,7 +22,6 @@ class _MainPageState extends State<MainPage> {
 
   late List<Photo> _photo = [];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,36 +30,7 @@ class _MainPageState extends State<MainPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               _photo = snapshot.data!;
-              return ListView.builder(
-                  itemCount: _photo.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index >= _photo.length) {
-                        fetchData();
-                        return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: CircularProgressIndicator(),
-                            ));
-                    }
-                  final Photo photo = _photo[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(photo.title,
-                          style: const TextStyle(color: Colors.black,
-                          fontSize: 30.0)),
-                        InkWell(
-                          onTap:() => goToImagePage(index, photo),
-                          child: Image.network(photo.urlPhoto),
-                        ),
-                        FavoriteIcon(index, _photoService, photo.like)
-                      ]
-                    )
-                  );
-                },
-              );
+              return ListPhotos(_photo);
             } else {
               return CircularProgressIndicator();
             }
@@ -66,17 +39,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-
-  Future<Future<Object?>> goToImagePage(int index, Photo photo) async {
-    return Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) =>  PhotoPage(photo,index),
-    ));
-  }
-
-
-  Future<void> fetchData() async {
-    _photoService.generatePhotos().then((value) => setState(() {}));
-  }
 
 
 }
