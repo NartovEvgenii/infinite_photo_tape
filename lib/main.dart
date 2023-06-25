@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:infinite_photo_tape/page/main_page.dart';
 import 'package:infinite_photo_tape/service/photo_service.dart';
 
-void main() {
-  init();
+import 'domain/photo.dart';
+
+void main() async{
+  await init();
+  var box = await Hive.openBox<Photo>('photos');
+  await box.clear();
   runApp(const MyApp());
 }
 
 init() async {
+  await initDatabase();
   initDependencies();
+}
+
+Future<void> initDatabase() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(PhotoAdapter());
 }
 
 void initDependencies() {

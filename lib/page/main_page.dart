@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -34,7 +33,6 @@ class _MainPageState extends State<MainPage> {
         fetchData();
       }
     });
-
     return Scaffold(
         body:FutureBuilder<List<Photo>>(
           future: _photoService.getPhotos(),
@@ -43,12 +41,10 @@ class _MainPageState extends State<MainPage> {
               _photo = snapshot.data!;
               return ListView.builder(
                   controller: _scrollController,
-                  itemCount: _photo.length + 2,
+                  itemCount: _photo.length + 1,
                   itemBuilder: (context, index) {
-                    if (index > _photo.length) {
-                      fetchData();
-                    }
-                    if (index == _photo.length) {
+                    if (index >= _photo.length) {
+                        fetchData();
                         return const Center(
                             child: Padding(
                               padding: EdgeInsets.all(8),
@@ -73,8 +69,7 @@ class _MainPageState extends State<MainPage> {
                   );
                 },
               );
-            }
-            else {
+            } else {
               return CircularProgressIndicator();
             }
         },
@@ -84,10 +79,7 @@ class _MainPageState extends State<MainPage> {
 
 
   Future<void> fetchData() async {
-      setState(() {
-        _photoService.generatePhotos();
-      });
-
+    _photoService.generatePhotos().then((value) => setState(() {}));
   }
 
 
