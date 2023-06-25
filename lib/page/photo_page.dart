@@ -21,7 +21,7 @@ class PhotoPage extends  StatelessWidget {
           alignment: AlignmentDirectional.bottomStart,
             children: [
               Image(
-                fit: BoxFit.cover,
+                fit: BoxFit.fitWidth,
                 height: double.infinity,
                 width: double.infinity,
                 image: NetworkImage(photo.urlPhoto),
