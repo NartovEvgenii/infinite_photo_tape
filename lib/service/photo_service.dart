@@ -16,7 +16,7 @@ class PhotoService {
   static const apiKey= String.fromEnvironment('API_KEY', defaultValue: "default");
   static const baseUrl= String.fromEnvironment('BASE_URL', defaultValue: "default");
 
-  Future<bool> generatePhotos() async{
+  Future<Photo?> generatePhotos() async{
     final url = Uri.https('${baseUrl}','/services/rest/',
                                   {
                                     'method': 'flickr.galleries.getPhotos',
@@ -44,8 +44,10 @@ class PhotoService {
                           title: 'Photo ${idPhoto}',
                           like: false);
       repository.addPhoto(photo);
+      return photo;
     }
-    return true;
+    return null;
+
   }
 
   Future<void> updateLikePhoto(int index) async{

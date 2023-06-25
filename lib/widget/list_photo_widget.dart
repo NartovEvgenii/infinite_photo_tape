@@ -119,6 +119,8 @@ class _ListPhotosState extends State<ListPhotos> {
 
 
   Future<void> fetchData() async {
-    _photoService.generatePhotos().then((value) => setState(() {}));
+    _photoService.generatePhotos().then((value) => setState(() {
+      _photo.add(value!);
+    }));
   }
 }
