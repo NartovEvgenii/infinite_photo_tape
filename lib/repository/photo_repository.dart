@@ -22,4 +22,16 @@ class PhotoRepository extends AbstractPhotoRepository {
     await  box.add(photo);
   }
 
+  @override
+  Future<Photo?> getPhoto(int index) async {
+    var box = await Hive.openBox<Photo>('photos');
+     return box.getAt(index);
+  }
+
+  @override
+  Future<void> updatePhoto(int index, Photo photo) async {
+    var box = await Hive.openBox<Photo>('photos');
+    box.putAt(index, photo);
+  }
+
 }

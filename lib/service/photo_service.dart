@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:uuid/uuid.dart';
+
 import '../domain/photo.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,18 +10,9 @@ import '../repository/photo_repository.dart';
 
 class PhotoService {
 
-  List<Photo> photos = List.from(
-      [Photo(urlPhoto: 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-                                      title: 'Photo 1', like: false),
-      Photo(urlPhoto: 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-          title: 'Photo 2', like: false),
-      Photo(urlPhoto: 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-      title: 'Photo 3', like: false)]);
-
-
   PhotoRepository repository = PhotoRepository();
+  var uuid = const Uuid();
 
-  late int counter = 3;
   static const apiKey= String.fromEnvironment('API_KEY', defaultValue: "default");
   static const baseUrl= String.fromEnvironment('BASE_URL', defaultValue: "default");
 
@@ -45,11 +38,20 @@ class PhotoService {
       var id = jsonPhoto['id'];
       var secret = jsonPhoto['secret'];
       var imageUrl = 'https://farm${farmId}.staticflickr.com/${serverId}/${id}_${secret}.jpg';
-      Photo photo = Photo(urlPhoto: '${imageUrl}',
-          title: 'Photo ${counter++}', like: false);
+      var idPhoto = uuid.v1();
+      Photo photo = Photo(idPhoto: idPhoto,
+                          urlPhoto: '${imageUrl}',
+                          title: 'Photo ${idPhoto}',
+                          like: false);
       repository.addPhoto(photo);
     }
     return true;
+  }
+
+  Future<void> updateLikePhoto(int index) async{
+    Photo? photo = await repository.getPhoto(index);
+    photo?.like = !photo.like;
+    repository.updatePhoto(index, photo!);
   }
 
   Future<List<Photo>> getPhotos() {

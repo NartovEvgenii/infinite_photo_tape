@@ -8,8 +8,8 @@ import 'domain/photo.dart';
 
 void main() async{
   await init();
-  var box = await Hive.openBox<Photo>('photos');
-  await box.clear();
+  //var box = await Hive.openBox<Photo>('photos');
+  //await box.clear();
   runApp(const MyApp());
 }
 

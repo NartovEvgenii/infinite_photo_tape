@@ -17,21 +17,24 @@ class PhotoAdapter extends TypeAdapter<Photo> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Photo(
-      urlPhoto: fields[0] as String,
-      title: fields[1] as String,
-      like: fields[2] as bool,
+      idPhoto: fields[0] as String,
+      urlPhoto: fields[1] as String,
+      title: fields[2] as String,
+      like: fields[3] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Photo obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.urlPhoto)
+      ..write(obj.idPhoto)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.urlPhoto)
       ..writeByte(2)
+      ..write(obj.title)
+      ..writeByte(3)
       ..write(obj.like);
   }
 

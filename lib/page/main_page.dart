@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:infinite_photo_tape/page/photo_page.dart';
 
 import '../domain/photo.dart';
 import '../service/photo_service.dart';
+import '../widget/favorite_icon_widget.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -16,23 +18,10 @@ class _MainPageState extends State<MainPage> {
   final _photoService = GetIt.I.get<PhotoService>();
 
   late List<Photo> _photo = [];
-  late ScrollController _scrollController;
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
 
   @override
   Widget build(BuildContext context) {
-    _scrollController.addListener(() {
-      var nextPageTrigger = 0.8 * _scrollController.position.maxScrollExtent;
-
-      if (_scrollController.position.pixels > nextPageTrigger) {
-        fetchData();
-      }
-    });
     return Scaffold(
         body:FutureBuilder<List<Photo>>(
           future: _photoService.getPhotos(),
@@ -40,7 +29,6 @@ class _MainPageState extends State<MainPage> {
             if (snapshot.hasData) {
               _photo = snapshot.data!;
               return ListView.builder(
-                  controller: _scrollController,
                   itemCount: _photo.length + 1,
                   itemBuilder: (context, index) {
                     if (index >= _photo.length) {
@@ -59,11 +47,12 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         Text(photo.title,
                           style: const TextStyle(color: Colors.black,
-                          fontSize: 20.0)),
-                        Image(
-                          image: NetworkImage(photo.urlPhoto),
+                          fontSize: 30.0)),
+                        InkWell(
+                          onTap:() => goToImagePage(index, photo),
+                          child: Image.network(photo.urlPhoto),
                         ),
-                        Icon(Icons.favorite_border, size: 30)
+                        FavoriteIcon(index, _photoService, photo.like)
                       ]
                     )
                   );
@@ -75,6 +64,13 @@ class _MainPageState extends State<MainPage> {
         },
       )
     );
+  }
+
+
+  Future<Future<Object?>> goToImagePage(int index, Photo photo) async {
+    return Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) =>  PhotoPage(photo,index),
+    ));
   }
 
 
